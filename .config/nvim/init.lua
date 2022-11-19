@@ -8,7 +8,7 @@ vim.cmd([[
     set incsearch
     set ignorecase
     set smartcase
-    set jumpoptions=stack 
+    set jumpoptions=stack
 ]])
 
 vim.cmd [[packadd packer.nvim]]
@@ -30,9 +30,9 @@ require('packer').startup(function()
             vim.fn['fzf#install']()
         end
     }
-    
+
     use {'kevinhwang91/nvim-bqf'}
-    
+
     use 'mhinz/vim-grepper'
     use {'ojroques/vim-oscyank', branch = 'main'}
 
@@ -185,6 +185,7 @@ map('n', '<leader>fe', ':Telescope file_browser<cr>', {})
 map('v', '<leader>c', ':OSCYank<cr>', {})
 map('n', '<leader>*', ':Grepper -tool rg -cword -noprompt<cr>', {})
 map('n', '<leader>n', ':NvimTreeToggle<cr>', {})
+map('v', '<leader>y', '"+y', {})
 
 -- Color scheme
 vim.cmd [[colorscheme tokyonight-night]]
