@@ -19,7 +19,7 @@ vim.cmd([[
 
 vim.cmd [[packadd packer.nvim]]
 
-require('packer').startup(function()
+require('packer').startup(function(use)
     -- Packer itself
     use 'wbthomason/packer.nvim'
 
@@ -30,21 +30,21 @@ require('packer').startup(function()
             { 'nvim-lua/plenary.nvim' }
         }
     }
-    use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+    use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
-    use {'junegunn/fzf', run = function()
-            vim.fn['fzf#install']()
-        end
+    use { 'junegunn/fzf', run = function()
+        vim.fn['fzf#install']()
+    end
     }
 
-    use {'kevinhwang91/nvim-bqf'}
+    use { 'kevinhwang91/nvim-bqf' }
 
     use 'mhinz/vim-grepper'
-    use {'ojroques/vim-oscyank', branch = 'main'}
+    use { 'ojroques/vim-oscyank', branch = 'main' }
 
     use 'nvim-telescope/telescope-file-browser.nvim'
-    use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
-    use {'p00f/nvim-ts-rainbow'}
+    use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+    use { 'p00f/nvim-ts-rainbow' }
     use {
         'nvim-tree/nvim-tree.lua',
         requires = {
@@ -53,15 +53,197 @@ require('packer').startup(function()
         tag = 'nightly' -- optional, updated every week. (see issue #1193)
     }
 
-    use {"sitiom/nvim-numbertoggle"}
+    use { "sitiom/nvim-numbertoggle" }
     use 'folke/tokyonight.nvim'
     use 'simeji/winresizer'
     use {
         'jedrzejboczar/possession.nvim',
         requires = { 'nvim-lua/plenary.nvim' }
     }
-    use 'dstein64/vim-startuptime'
+    -- use 'dstein64/vim-startuptime'
+
+    -- NVIM LSP CONFIGS
+    use 'neovim/nvim-lspconfig'
+
+    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-cmdline'
+    use 'hrsh7th/nvim-cmp'
+
+    use 'L3MON4D3/LuaSnip'
+    use 'saadparwaiz1/cmp_luasnip'
 end)
+
+
+-- CMP NVIM Setup
+vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
+
+require('luasnip.loaders.from_vscode').lazy_load()
+
+local cmp = require('cmp')
+local luasnip = require('luasnip')
+
+local select_opts = { behavior = cmp.SelectBehavior.Select }
+
+local has_words_before = function()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+cmp.setup({
+    completion = {
+        completeopt = 'menu,menuone,noinsert'
+    },
+    snippet = {
+        expand = function(args)
+            luasnip.lsp_expand(args.body)
+        end
+    },
+    sources = {
+        { name = 'path' },
+        { name = 'nvim_lsp', keyword_length = 3 },
+        { name = 'buffer', keyword_length = 3 },
+        { name = 'luasnip', keyword_length = 2 },
+    },
+    window = {
+        documentation = cmp.config.window.bordered(),
+        completion = cmp.config.window.bordered()
+    },
+    formatting = {
+        fields = { 'menu', 'abbr', 'kind' },
+        format = function(entry, item)
+            local menu_icon = {
+                nvim_lsp = 'λ',
+                luasnip = '⋗',
+                buffer = 'Ω',
+            }
+
+            item.menu = menu_icon[entry.source.name]
+            return item
+        end,
+    },
+    mapping = {
+        ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
+        ['<Down>'] = cmp.mapping.select_next_item(select_opts),
+
+        ['<C-p>'] = cmp.mapping.select_prev_item(select_opts),
+        ['<C-n>'] = cmp.mapping.select_next_item(select_opts),
+
+        ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+
+        ['<C-d>'] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(1) then
+                luasnip.jump(1)
+            else
+                fallback()
+            end
+        end, { 'i', 's' }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+            elseif has_words_before() then
+                cmp.complete()
+            else
+                fallback()
+            end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+            else
+                fallback()
+            end
+        end, { "i", "s" }),
+    },
+})
+
+-- LSP Conifg
+local lspconfig = require('lspconfig')
+
+local opts = { noremap = true, silent = true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local bufopts = { noremap = true, silent = true, buffer = bufnr }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wl', function()
+        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, bufopts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+    vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = false } end, bufopts)
+end
+
+local lsp_flags = {
+    -- This is the default in Nvim 0.7+
+    debounce_text_changes = 150,
+}
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+-- LUA LSP setup
+lspconfig.sumneko_lua.setup({
+    capabilities = capabilities,
+    settings = {
+        Lua = {
+            runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+            },
+            diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = { 'vim' },
+            },
+            workspace = {
+                -- Make the server aware of Neovim runtime files
+                library = vim.api.nvim_get_runtime_file("", true),
+                checkThirdParty = false
+            },
+            -- Do not send telemetry data containing a randomized but unique identifier
+            telemetry = {
+                enable = false,
+            },
+        },
+    },
+    on_attach = on_attach,
+    flags = lsp_flags,
+})
+
+-- CCLS LSP Setup
+lspconfig.ccls.setup({
+    on_attach = on_attach,
+    flags = lsp_flags,
+    capabilities = capabilities,
+})
 
 -- Number toggle setup
 require('numbertoggle').setup()
@@ -74,7 +256,7 @@ require('bqf').setup({
         win_height = 12,
         win_vheight = 12,
         delay_syntax = 80,
-        border_chars = {'┃', '┃', '━', '━', '┏', '┓', '┗', '┛', '█'},
+        border_chars = { '┃', '┃', '━', '━', '┏', '┓', '┗', '┛', '█' },
         show_title = false,
         should_preview_cb = function(bufnr, qwinid)
             local ret = true
@@ -95,14 +277,13 @@ require('bqf').setup({
         drop = 'o',
         openc = 'O',
         split = '<C-s>',
-        tabdrop = '<C-t>',
-        tabc = '',
+        tabc = 'tabc',
         ptogglemode = 'z,',
     },
     filter = {
         fzf = {
-            action_for = {['ctrl-s'] = 'split', ['ctrl-t'] = 'tab drop', ['ctrl-v'] = 'vsplit'},
-            extra_opts = {'--bind', 'ctrl-o:toggle-all', '--prompt', 'QuickFix> '}
+            action_for = { ['ctrl-s'] = 'split', ['ctrl-t'] = 'tabedit', ['ctrl-v'] = 'vsplit' },
+            extra_opts = { '--bind', 'ctrl-o:toggle-all', '--prompt', 'QuickFix> ' }
         }
     }
 })
@@ -120,26 +301,26 @@ require("nvim-tree").setup()
 
 -- OR setup with some options
 require("nvim-tree").setup({
-  sort_by = "case_sensitive",
-  view = {
-    adaptive_size = true,
-    mappings = {
-      list = {
-        { key = "u", action = "dir_up" },
-      },
+    sort_by = "case_sensitive",
+    view = {
+        adaptive_size = true,
+        mappings = {
+            list = {
+                { key = "u", action = "dir_up" },
+            },
+        },
     },
-  },
-  renderer = {
-    group_empty = true,
-  },
-  filters = {
-    dotfiles = true,
-  },
+    renderer = {
+        group_empty = true,
+    },
+    filters = {
+        dotfiles = true,
+    },
 })
 
 -- Nvim Tree sitter config
 require('nvim-treesitter.configs').setup {
-    ensure_installed = { 'c', 'lua', 'cpp', 'python', 'rust'},
+    ensure_installed = { 'c', 'lua', 'cpp', 'python', 'rust' },
     sync_install = false,
 
     auto_install = true,
@@ -215,8 +396,8 @@ require('possession').setup {
     debug = false,
     prompt_no_cr = false,
     autosave = {
-        current = false,  -- or fun(name): boolean
-        tmp = false,  -- or fun(): boolean
+        current = false, -- or fun(name): boolean
+        tmp = false, -- or fun(): boolean
         tmp_name = 'tmp',
         on_load = false,
         on_quit = false,
@@ -238,23 +419,23 @@ require('possession').setup {
     },
     plugins = {
         close_windows = {
-            hooks = {'before_save', 'before_load'},
-            preserve_layout = true,  -- or fun(win): boolean
+            hooks = { 'before_save', 'before_load' },
+            preserve_layout = true, -- or fun(win): boolean
             match = {
                 floating = true,
                 buftype = {},
                 filetype = {},
-                custom = false,  -- or fun(win): boolean
+                custom = false, -- or fun(win): boolean
             },
         },
         --delete_hidden_buffers = false,
         delete_hidden_buffers = {
             hooks = {
                 'before_load',
-                 vim.o.sessionoptions:match('buffer') and 'before_save',
-             },
-             force = false,  -- or fun(buf): boolean
-         },
+                vim.o.sessionoptions:match('buffer') and 'before_save',
+            },
+            force = false, -- or fun(buf): boolean
+        },
         nvim_tree = true,
         tabby = true,
         delete_buffers = false,
@@ -267,12 +448,12 @@ require('telescope').load_extension 'possession'
 
 -- Grepper
 vim.g.grepper = {
-    tools = {'rg', 'grep'},
+    tools = { 'rg', 'grep' },
     searchreg = 1,
 }
 
 -- https://github.com/mhinz/vim-grepper
-vim.g.grepper = {tools = {'rg', 'grep'}, searchreg = 1}
+vim.g.grepper = { tools = { 'rg', 'grep' }, searchreg = 1 }
 vim.cmd(([[
     aug Grepper
         au!
@@ -290,7 +471,7 @@ vim.cmd([[
 vim.g.winresizer_start_key = '<leader>rs'
 
 -- Key mappers
-function map(mode, lhs, rhs, opts)
+local function map(mode, lhs, rhs, opts)
     local options = { noremap = true }
     if opts then
         options = vim.tbl_extend("force", options, opts)
