@@ -73,6 +73,11 @@ require('packer').startup(function(use)
 
     use 'L3MON4D3/LuaSnip'
     use 'saadparwaiz1/cmp_luasnip'
+
+    use 'MattesGroeger/vim-bookmarks'
+    use 'tom-anders/telescope-vim-bookmarks.nvim'
+
+    use 'yssl/QFEnter'
 end)
 
 
@@ -288,6 +293,13 @@ require('bqf').setup({
     }
 })
 
+-- vim-bookmarks
+vim.g.bookmark_save_per_working_dir = 1
+vim.g.bookmark_auto_save = 1
+
+-- QFEnter
+vim.g.qfenter_exclude_filetypes = {'NvimTree'}
+vim.g.qfenter_excluded_action = 'error'
 
 -- Nvim tree setup
 vim.g.loaded_netrw = 1
@@ -445,6 +457,7 @@ require('possession').setup {
 require('telescope').load_extension 'file_browser'
 require('telescope').load_extension 'fzf'
 require('telescope').load_extension 'possession'
+require('telescope').load_extension 'vim_bookmarks'
 
 -- Grepper
 vim.g.grepper = {
