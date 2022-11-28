@@ -102,7 +102,7 @@ vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -164,10 +164,28 @@ lspconfig.sumneko_lua.setup({
 })
 
 -- CCLS LSP Setup
-lspconfig.ccls.setup({
+-- lspconfig.ccls.setup({
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     capabilities = capabilities,
+-- })
+
+lspconfig.clangd.setup({
+    cmd = {
+        "clangd",
+        "--compile-commands-dir=."
+    },
+    autostart = true,
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
+    root_dir = function(_)
+        -- print("Hello root dir here")
+        -- print(lspconfig.clangd.document_config.default_config.root_dir(fname))
+        -- print(vim.fn.getcwd())
+        return vim.fn.getcwd()
+        -- lspconfig.clangd.document_config.default_config.root_dir(fname) or vim.fn.getcwd()
+    end,
 })
 
 -- vim-bookmarks
@@ -180,31 +198,30 @@ vim.g.qfenter_excluded_action = 'error'
 
 -- Nvim tree setup
 vim.g.loaded_netrw = 1
+vim.g.loaded = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
 
--- empty setup using defaults
-require("nvim-tree").setup()
-
 -- OR setup with some options
 require("nvim-tree").setup({
-    sort_by = "case_sensitive",
+    -- sort_by = "case_sensitive",
     view = {
         adaptive_size = true,
-        mappings = {
-            list = {
-                { key = "u", action = "dir_up" },
-            },
-        },
+        -- mappings = {
+        --     list = {
+        --         { key = "u", action = "dir_up" },
+        --     },
+        -- },
     },
-    renderer = {
-        group_empty = true,
-    },
-    filters = {
-        dotfiles = true,
-    },
+    disable_netrw = true,
+    -- renderer = {
+    --     group_empty = true,
+    -- },
+    -- filters = {
+    --     dotfiles = true,
+    -- },
 })
 
 -- Nvim Tree sitter config
@@ -228,7 +245,6 @@ require('nvim-treesitter.configs').setup {
 }
 
 -- Telescope setup
-local actions = require('telescope.actions')
 local action_layout = require('telescope.actions.layout')
 require('telescope').setup {
     defaults = {
