@@ -188,6 +188,11 @@ lspconfig.clangd.setup({
     end,
 })
 
+lspconfig.rust_analyzer.setup({
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
+
 -- vim-bookmarks
 vim.g.bookmark_save_per_working_dir = 1
 vim.g.bookmark_auto_save = 1
