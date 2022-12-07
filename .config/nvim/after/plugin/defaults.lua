@@ -22,3 +22,5 @@ wo.list = true
 opt.scrolloff = 10
 opt.sidescrolloff = 30
 cmd("set sessionoptions-=buffers")
+
+cmd("colorscheme tokyonight-night")
