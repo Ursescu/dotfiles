@@ -1,7 +1,6 @@
 local M = {}
 
 function M.setup()
-    print("SETUP")
     require('tokyonight').setup({
         style = 'night',
         styles = {

@@ -143,6 +143,14 @@ function M.setup()
             end
         }
 
+        use {
+            "akinsho/toggleterm.nvim",
+            tag = '*',
+            config = function()
+                require('config.toggleterm').setup()
+            end
+        }
+
         -- Bootstrap Neovim
         if packer_bootstrap then
             print "Neovim restart is required after installation!"

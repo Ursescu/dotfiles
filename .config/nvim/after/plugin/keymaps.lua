@@ -32,3 +32,5 @@ map('n', '[[', '?{<CR>w99[{', {})
 map('n', '][', '/}<CR>b99]}', {})
 map('n', ']]', 'j0[[%/{<CR>', {})
 map('n', '[]', 'k$][%?}<CR>', {})
+
+-- vim.keymap.set('n', '<c-\\>', '<Cmd>execute v:count . "ToggleTerm"<CR>', {})
