@@ -28,4 +28,7 @@ map('v', '<leader>y', '"+y', {})
 map('n', '<leader>y', '"+y', {})
 map('', '<f12>', ':set list!<cr>', {})
 map('', '<leader>w', ':set wrap!<cr>', {})
-
+map('n', '[[', '?{<CR>w99[{', {})
+map('n', '][', '/}<CR>b99]}', {})
+map('n', ']]', 'j0[[%/{<CR>', {})
+map('n', '[]', 'k$][%?}<CR>', {})
