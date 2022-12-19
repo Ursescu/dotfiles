@@ -114,6 +114,8 @@ function M.setup()
 
         -- NVIM LSP CONFIGS
         use 'neovim/nvim-lspconfig'
+        use 'williamboman/mason.nvim'
+        use 'williamboman/mason-lspconfig.nvim'
 
         use 'hrsh7th/cmp-nvim-lsp'
         use 'hrsh7th/cmp-buffer'
@@ -148,6 +150,15 @@ function M.setup()
             tag = '*',
             config = function()
                 require('config.toggleterm').setup()
+            end
+        }
+
+        use {
+            'akinsho/bufferline.nvim',
+            tag = 'v3.*',
+            requires = { 'nvim-tree/nvim-web-devicons' },
+            config = function()
+                require('config.bufferline').setup()
             end
         }
 

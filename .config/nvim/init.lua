@@ -92,8 +92,9 @@ cmp.setup({
 })
 
 -- LSP Conifg
+require("mason").setup()
+require("mason-lspconfig").setup()
 local lspconfig = require('lspconfig')
-
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
@@ -193,12 +194,19 @@ lspconfig.rust_analyzer.setup({
     capabilities = capabilities,
 })
 
+lspconfig.tsserver.setup({
+    on_attach = on_attach,
+    filetypes = { 'typescript', 'typescriptdirect', 'typescript.tsx' },
+    cmd = { 'typescript-language-server', '--stdio' },
+    capabilities = capabilities
+})
+
 -- vim-bookmarks
 vim.g.bookmark_save_per_working_dir = 1
 vim.g.bookmark_auto_save = 1
 
 -- QFEnter
-vim.g.qfenter_exclude_filetypes = {'NvimTree'}
+vim.g.qfenter_exclude_filetypes = { 'NvimTree' }
 vim.g.qfenter_excluded_action = 'error'
 
 -- Nvim tree setup
@@ -304,4 +312,3 @@ require('telescope').load_extension 'file_browser'
 require('telescope').load_extension 'fzf'
 require('telescope').load_extension 'possession'
 require('telescope').load_extension 'vim_bookmarks'
-
