@@ -38,10 +38,10 @@ function M.setup()
         -- Run PackerCompile if there are changes in this file
         -- vim.cmd "autocmd BufWritePost plugins.lua source <afile> | PackerCompile"
         local packer_grp = vim.api.nvim_create_augroup("packer_user_config", { clear = true })
-        vim.api.nvim_create_autocmd(
-            { "BufWritePost" },
-            { pattern = "init.lua", command = "source <afile> | PackerCompile", group = packer_grp }
-        )
+--        vim.api.nvim_create_autocmd(
+--            { "BufWritePost" },
+--            { pattern = "init.lua", command = "source <afile> | PackerCompile", group = packer_grp }
+--        )
     end
 
     -- Plugins
@@ -58,10 +58,10 @@ function M.setup()
         }
         use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 
-        use { 'junegunn/fzf', run = function()
-            vim.fn['fzf#install']()
-        end
-        }
+        -- use { 'junegunn/fzf', run = function()
+        --     vim.fn['fzf#install']()
+        -- end
+        -- }
 
         use {
             'kevinhwang91/nvim-bqf',
@@ -89,29 +89,19 @@ function M.setup()
             tag = 'nightly' -- optional, updated every week. (see issue #1193)
         }
 
-        use {
-            "sitiom/nvim-numbertoggle",
-            config = function()
-                -- Number toggle setup
-                require('numbertoggle').setup()
-            end
-        }
-        use {
-            'folke/tokyonight.nvim',
-            config = function()
-                require('config.tokyonight').setup()
-            end
-        }
+        -- use {
+        --     "sitiom/nvim-numbertoggle",
+        -- }
 
-        use 'simeji/winresizer'
-        use {
-            'jedrzejboczar/possession.nvim',
-            requires = { 'nvim-lua/plenary.nvim' },
-            config = function()
-                require('config.possession').setup()
-            end
-        }
-
+        -- use 'simeji/winresizer'
+        -- use {
+        --     'jedrzejboczar/possession.nvim',
+        --     requires = { 'nvim-lua/plenary.nvim' },
+        --     config = function()
+        --         require('config.possession').setup()
+        --     end
+        -- }
+        --
         -- NVIM LSP CONFIGS
         use 'neovim/nvim-lspconfig'
         use 'williamboman/mason.nvim'
@@ -161,6 +151,13 @@ function M.setup()
                 require('config.bufferline').setup()
             end
         }
+
+        use {
+            'folke/tokyonight.nvim',
+             config = function()
+                 require('config.tokyonight').setup()
+             end
+         }
 
         -- Bootstrap Neovim
         if packer_bootstrap then

@@ -211,30 +211,19 @@ vim.g.qfenter_excluded_action = 'error'
 
 -- Nvim tree setup
 vim.g.loaded_netrw = 1
-vim.g.loaded = 1
 vim.g.loaded_netrwPlugin = 1
-
--- set termguicolors to enable highlight groups
-vim.opt.termguicolors = true
 
 -- OR setup with some options
 require("nvim-tree").setup({
-    -- sort_by = "case_sensitive",
     view = {
-        adaptive_size = true,
-        -- mappings = {
-        --     list = {
-        --         { key = "u", action = "dir_up" },
-        --     },
-        -- },
+        adaptive_size = false,
+        width = 30,
+        side = 'left',
+    },
+    git = {
+        enable = false,
     },
     disable_netrw = true,
-    -- renderer = {
-    --     group_empty = true,
-    -- },
-    -- filters = {
-    --     dotfiles = true,
-    -- },
 })
 
 -- Nvim Tree sitter config
@@ -248,13 +237,13 @@ require('nvim-treesitter.configs').setup {
         enable = true,
         additional_vim_regex_highlighting = false
     },
-
-    rainbow = {
-        enable = true,
-        disable = {},
-        extended_mode = true,
-        max_file_lines = nil
-    }
+    -- This plugin is not updating the state while typing
+    -- rainbow = {
+    --     enable = true,
+    --     disable = {},
+    --     extended_mode = true,
+    --     max_file_lines = nil
+    -- }
 }
 
 -- Telescope setup
@@ -310,5 +299,5 @@ require('telescope').setup {
 
 require('telescope').load_extension 'file_browser'
 require('telescope').load_extension 'fzf'
-require('telescope').load_extension 'possession'
+-- require('telescope').load_extension 'possession'
 require('telescope').load_extension 'vim_bookmarks'

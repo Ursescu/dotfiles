@@ -1,4 +1,4 @@
-local g = vim.g
+-- local g = vim.g
 local opt = vim.opt
 local cmd = vim.cmd
 local wo = vim.wo
@@ -15,12 +15,19 @@ opt.laststatus = 2
 opt.incsearch = true
 opt.ignorecase = true
 opt.smartcase = true
+opt.number = true
+opt.relativenumber = true
 opt.jumpoptions = "stack"
 wo.wrap = false
 opt.listchars = "tab:→\\ ,extends:>,precedes:<,space:·"
 wo.list = true
-opt.scrolloff = 10
-opt.sidescrolloff = 30
+opt.scrolloff = 8
+opt.sidescrolloff = 8
+opt.splitright = true
 cmd("set sessionoptions-=buffers")
 
-cmd("colorscheme tokyonight-night")
+opt.termguicolors = true
+
+-- Setting it twice to activate hightlights for bufferline (don't know why this is needed)
+vim.cmd("colorscheme tokyonight-night")
+vim.cmd("colorscheme tokyonight-night")
