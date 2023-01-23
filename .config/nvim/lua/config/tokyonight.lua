@@ -11,7 +11,7 @@ function M.setup()
                 italic = false
             },
         },
-        sidebars = {"qf", "NvimTree", "help"},
+        sidebars = { "qf", "NvimTree", "help" },
     })
 end
 

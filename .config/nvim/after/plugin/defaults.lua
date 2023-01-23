@@ -3,9 +3,6 @@ local opt = vim.opt
 local cmd = vim.cmd
 local wo = vim.wo
 
--- g.mapleader = " "
--- g.maplocalleader = ","
-
 opt.expandtab = true
 opt.ts = 4
 opt.sw = 4
@@ -17,17 +14,18 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.number = true
 opt.relativenumber = true
-opt.jumpoptions = "stack"
+opt.jumpoptions = 'stack'
 wo.wrap = false
-opt.listchars = "tab:→\\ ,extends:>,precedes:<,space:·"
+cmd([[set listchars=tab:<->,extends:>,precedes:<,space:·]])
 wo.list = true
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.splitright = true
-cmd("set sessionoptions-=buffers")
-
+opt.swapfile = false
+opt.backup = false
 opt.termguicolors = true
+cmd('set sessionoptions-=buffers')
 
 -- Setting it twice to activate hightlights for bufferline (don't know why this is needed)
-vim.cmd("colorscheme tokyonight-night")
-vim.cmd("colorscheme tokyonight-night")
+cmd('colorscheme tokyonight-night')
+cmd('colorscheme tokyonight-night')

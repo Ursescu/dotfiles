@@ -12,7 +12,7 @@ local select_opts = { behavior = cmp.SelectBehavior.Select }
 
 local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
 cmp.setup({
@@ -67,7 +67,7 @@ cmp.setup({
                 fallback()
             end
         end, { 'i', 's' }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
+        ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
             elseif luasnip.expand_or_jumpable() then
@@ -77,9 +77,9 @@ cmp.setup({
             else
                 fallback()
             end
-        end, { "i", "s" }),
+        end, { 'i', 's' }),
 
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
+        ['<S-Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
                 cmp.select_prev_item()
             elseif luasnip.jumpable(-1) then
@@ -87,13 +87,13 @@ cmp.setup({
             else
                 fallback()
             end
-        end, { "i", "s" }),
+        end, { 'i', 's' }),
     },
 })
 
 -- LSP Conifg
-require("mason").setup()
-require("mason-lspconfig").setup()
+require('mason').setup()
+require('mason-lspconfig').setup()
 local lspconfig = require('lspconfig')
 local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
@@ -114,7 +114,7 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '<C-z>', vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
     vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     vim.keymap.set('n', '<space>wl', function()
@@ -151,7 +151,7 @@ lspconfig.sumneko_lua.setup({
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true),
+                library = vim.api.nvim_get_runtime_file('', true),
                 checkThirdParty = false
             },
             -- Do not send telemetry data containing a randomized but unique identifier
@@ -173,15 +173,16 @@ lspconfig.sumneko_lua.setup({
 
 lspconfig.clangd.setup({
     cmd = {
-        "clangd",
-        "--compile-commands-dir=."
+        'clangd',
+        '--compile-commands-dir=.',
+        '--query-driver=/opt/mcuxpresso-ide/ide/tools/bin/arm-none-eabi-gcc'
     },
     autostart = true,
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
     root_dir = function(_)
-        -- print("Hello root dir here")
+        -- print('Hello root dir here')
         -- print(lspconfig.clangd.document_config.default_config.root_dir(fname))
         -- print(vim.fn.getcwd())
         return vim.fn.getcwd()
@@ -214,17 +215,29 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 -- OR setup with some options
-require("nvim-tree").setup({
+require('nvim-tree').setup({
     view = {
         adaptive_size = false,
         width = 30,
         side = 'left',
+        mappings = {
+            list = {
+                { key = '<C-i>', action = 'toggle_file_info' },
+                { key = '<C-k>', action = ''}
+            }
+        }
     },
+    -- actions = {
+    --     open_file = {
+    --         resize_window = false,
+    --     }
+    -- },
     git = {
         enable = false,
     },
     disable_netrw = true,
 })
+
 
 -- Nvim Tree sitter config
 require('nvim-treesitter.configs').setup {
@@ -265,9 +278,11 @@ require('telescope').setup {
             i = {
                 -- ['<esc>'] = actions.close,
                 ['<C-u>'] = false,
+                ['<C-d>'] = require('telescope.actions').delete_buffer,
                 ['<M-p>'] = action_layout.toggle_preview
             },
             n = {
+                ['<C-d>'] = require('telescope.actions').delete_buffer,
                 ['<M-p>'] = action_layout.toggle_preview
             },
         },
@@ -279,6 +294,11 @@ require('telescope').setup {
         find_files = {
             path_display = {
                 'absolute',
+            }
+        },
+        buffers = {
+            path_display = {
+                truncate = 3,
             }
         }
     },

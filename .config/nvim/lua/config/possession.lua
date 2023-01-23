@@ -1,7 +1,7 @@
 local M = {}
 
 function M.setup()
-    -- Possession 
+    -- Possession
     require('possession').setup {
         session_dir = '/home/john/.nvim/config/data/possession',
         silent = false,

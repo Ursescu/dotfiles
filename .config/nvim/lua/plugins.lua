@@ -13,7 +13,7 @@ function M.setup()
 
         display = {
             open_fn = function()
-                return require("packer.util").float { border = "rounded" }
+                return require('packer.util').float { border = 'rounded' }
             end,
         },
     }
@@ -22,26 +22,26 @@ function M.setup()
     -- Run PackerCompile if there are changes in this file
     local function packer_init()
         local fn = vim.fn
-        local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
+        local install_path = fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
         if fn.empty(fn.glob(install_path)) > 0 then
             packer_bootstrap = fn.system {
-                "git",
-                "clone",
-                "--depth",
-                "1",
-                "https://github.com/wbthomason/packer.nvim",
+                'git',
+                'clone',
+                '--depth',
+                '1',
+                'https://github.com/wbthomason/packer.nvim',
                 install_path,
             }
             vim.cmd [[packadd packer.nvim]]
         end
 
         -- Run PackerCompile if there are changes in this file
-        -- vim.cmd "autocmd BufWritePost plugins.lua source <afile> | PackerCompile"
-        local packer_grp = vim.api.nvim_create_augroup("packer_user_config", { clear = true })
---        vim.api.nvim_create_autocmd(
---            { "BufWritePost" },
---            { pattern = "init.lua", command = "source <afile> | PackerCompile", group = packer_grp }
---        )
+        -- vim.cmd 'autocmd BufWritePost plugins.lua source <afile> | PackerCompile'
+        local packer_grp = vim.api.nvim_create_augroup('packer_user_config', { clear = true })
+        --        vim.api.nvim_create_autocmd(
+        --            { 'BufWritePost' },
+        --            { pattern = 'init.lua', command = 'source <afile> | PackerCompile', group = packer_grp }
+        --        )
     end
 
     -- Plugins
@@ -90,7 +90,7 @@ function M.setup()
         }
 
         -- use {
-        --     "sitiom/nvim-numbertoggle",
+        --     'sitiom/nvim-numbertoggle',
         -- }
 
         -- use 'simeji/winresizer'
@@ -136,7 +136,7 @@ function M.setup()
         }
 
         use {
-            "akinsho/toggleterm.nvim",
+            'akinsho/toggleterm.nvim',
             tag = '*',
             config = function()
                 require('config.toggleterm').setup()
@@ -145,7 +145,7 @@ function M.setup()
 
         use {
             'akinsho/bufferline.nvim',
-            tag = 'v3.*',
+            tag = 'dev',
             requires = { 'nvim-tree/nvim-web-devicons' },
             config = function()
                 require('config.bufferline').setup()
@@ -153,26 +153,40 @@ function M.setup()
         }
 
         use {
+            'lukas-reineke/indent-blankline.nvim',
+            config = function()
+                require('config.indent').setup()
+            end
+        }
+
+        use {
             'folke/tokyonight.nvim',
-             config = function()
-                 require('config.tokyonight').setup()
-             end
-         }
+            config = function()
+                require('config.tokyonight').setup()
+            end
+        }
+        use {
+            'https://gitlab.com/yorickpeterse/nvim-window.git',
+            as = 'nvim-window.nvim',
+            config = function()
+                require('config.nvim-window').setup()
+            end
+        }
 
         -- Bootstrap Neovim
         if packer_bootstrap then
-            print "Neovim restart is required after installation!"
-            require("packer").sync()
+            print 'Neovim restart is required after installation!'
+            require('packer').sync()
         end
     end
 
     -- Init and start packer
     packer_init()
-    local packer = require "packer"
+    local packer = require 'packer'
 
     -- Performance
-    -- pcall(require, "impatient")
-    -- pcall(require, "packer_compiled")
+    -- pcall(require, 'impatient')
+    -- pcall(require, 'packer_compiled')
 
     packer.init(conf)
     packer.startup(plugins)

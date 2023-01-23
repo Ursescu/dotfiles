@@ -3,24 +3,24 @@ local M = {}
 function M.setup()
 
     local options = {
-        mode = "buffers", -- set to "tabs" to only show tabpages instead
-        numbers = "buffer_id", -- can be "none" | "ordinal" | "buffer_id" | "both" | function
+        mode = 'buffers', -- set to 'tabs' to only show tabpages instead
+        numbers = 'none', -- can be 'none' | 'ordinal' | 'buffer_id' | 'both' | function
         close_command = function(bufnr)
-            M.buf_kill("bd", bufnr, false)
+            M.buf_kill('bd', bufnr, false)
         end,
-        right_mouse_command = "vert sbuffer %d", -- can be a string | function, see "Mouse actions"
-        left_mouse_command = "buffer %d", -- can be a string | function, see "Mouse actions"
+        right_mouse_command = 'vert sbuffer %d', -- can be a string | function, see 'Mouse actions'
+        left_mouse_command = 'buffer %d', -- can be a string | function, see 'Mouse actions'
         middle_mouse_command = function(bufnr)
-            M.buf_kill("bd", bufnr, false)
+            M.buf_kill('bd', bufnr, false)
         end,
         indicator = {
             icon = '▎', -- this should be omitted if indicator style is not 'icon'
             style = 'icon',
         },
 
-        modified_icon = "●",
-        buffer_close_icon = "",
-        close_icon = "",
+        modified_icon = '●',
+        buffer_close_icon = '',
+        close_icon = '',
 
         -- buffer_close_icon = lvim.icons.ui.Close,
         -- modified_icon = lvim.icons.ui.Circle,
@@ -31,49 +31,49 @@ function M.setup()
         --- Please note some names can/will break the
         --- bufferline so use this at your discretion knowing that it has
         --- some limitations that will *NOT* be fixed.
-        name_formatter = function(buf) -- buf contains a "name", "path" and "bufnr"
+        name_formatter = function(buf) -- buf contains a 'name', 'path' and 'bufnr'
             -- remove extension from markdown files for example
-            if buf.name:match "%.md" then
-                return vim.fn.fnamemodify(buf.name, ":t:r")
+            if buf.name:match '%.md' then
+                return vim.fn.fnamemodify(buf.name, ':t:r')
             end
         end,
         max_name_length = 18,
         max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
         truncate_names = true, -- whether or not tab names should be truncated
         tab_size = 18,
-        diagnostics = "nvim_lsp",
+        diagnostics = 'nvim_lsp',
         diagnostics_update_in_insert = false,
         -- diagnostics_indicator = diagnostics_indicator,
         -- -- NOTE: this will be called a lot so don't do any heavy processing here
         -- custom_filter = custom_filter,
         offsets = {
             {
-                filetype = "undotree",
-                text = "Undotree",
-                highlight = "PanelHeading",
+                filetype = 'undotree',
+                text = 'Undotree',
+                highlight = 'PanelHeading',
                 padding = 1,
             },
             {
-                filetype = "NvimTree",
-                text = "Explorer",
-                highlight = "PanelHeading",
+                filetype = 'NvimTree',
+                text = 'Explorer',
+                highlight = 'PanelHeading',
                 padding = 1,
             },
             {
-                filetype = "DiffviewFiles",
-                text = "Diff View",
-                highlight = "PanelHeading",
+                filetype = 'DiffviewFiles',
+                text = 'Diff View',
+                highlight = 'PanelHeading',
                 padding = 1,
             },
             {
-                filetype = "flutterToolsOutline",
-                text = "Flutter Outline",
-                highlight = "PanelHeading",
+                filetype = 'flutterToolsOutline',
+                text = 'Flutter Outline',
+                highlight = 'PanelHeading',
             },
             {
-                filetype = "packer",
-                text = "Packer",
-                highlight = "PanelHeading",
+                filetype = 'packer',
+                text = 'Packer',
+                highlight = 'PanelHeading',
                 padding = 1,
             },
         },
@@ -85,15 +85,15 @@ function M.setup()
         persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
         -- can also be a table containing 2 custom separators
         -- [focused and unfocused]. eg: { '|', '|' }
-        separator_style = "thin",
+        separator_style = 'thin',
         enforce_regular_tabs = false,
         always_show_bufferline = true,
         hover = {
             enabled = false, -- requires nvim 0.8+
             delay = 200,
-            reveal = { "close" },
+            reveal = { 'close' },
         },
-        sort_by = "insert_after_current",
+        sort_by = 'insert_after_current',
     }
 
     require('bufferline').setup({
@@ -102,7 +102,7 @@ function M.setup()
 end
 
 function M.buf_kill(kill_command, bufnr, force)
-    kill_command = kill_command or "bd"
+    kill_command = kill_command or 'bd'
 
     local bo = vim.bo
     local api = vim.api
@@ -118,15 +118,15 @@ function M.buf_kill(kill_command, bufnr, force)
     if not force then
         local warning
         if bo[bufnr].modified then
-            warning = fmt([[No write since last change for (%s)]], fnamemodify(bufname, ":t"))
-        elseif api.nvim_buf_get_option(bufnr, "buftype") == "terminal" then
+            warning = fmt([[No write since last change for (%s)]], fnamemodify(bufname, ':t'))
+        elseif api.nvim_buf_get_option(bufnr, 'buftype') == 'terminal' then
             warning = fmt([[Terminal %s will be killed]], bufname)
         end
         if warning then
             vim.ui.input({
                 prompt = string.format([[%s. Close it anyway? [y]es or [n]o (default: no): ]], warning),
             }, function(choice)
-                if choice ~= nil and choice:match "ye?s?" then M.buf_kill(kill_command, bufnr, true) end
+                if choice ~= nil and choice:match 'ye?s?' then M.buf_kill(kill_command, bufnr, true) end
             end)
             return
         end
@@ -138,7 +138,7 @@ function M.buf_kill(kill_command, bufnr, force)
     end, api.nvim_list_wins())
 
     if force then
-        kill_command = kill_command .. "!"
+        kill_command = kill_command .. '!'
     end
 
     -- Get list of active buffers
@@ -164,7 +164,7 @@ function M.buf_kill(kill_command, bufnr, force)
     -- Check if buffer still exists, to ensure the target buffer wasn't killed
     -- due to options like bufhidden=wipe.
     if api.nvim_buf_is_valid(bufnr) and bo[bufnr].buflisted then
-        vim.cmd(string.format("%s %d", kill_command, bufnr))
+        vim.cmd(string.format('%s %d', kill_command, bufnr))
     end
 end
 

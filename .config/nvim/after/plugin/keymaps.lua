@@ -1,13 +1,11 @@
-
 -- Key mappers
 local function map(mode, lhs, rhs, opts)
     local options = { noremap = true }
     if opts then
-        options = vim.tbl_extend("force", options, opts)
+        options = vim.tbl_extend('force', options, opts)
     end
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
-
 
 -- Grepper `gs` motion
 vim.cmd([[
@@ -27,19 +25,19 @@ vim.cmd [[
 
 local commands = {
     {
-        name = "BufferKill",
+        name = 'BufferKill',
         fn = function()
-            require("config.bufferline").buf_kill "bd"
+            require('config.bufferline').buf_kill('bd')
         end,
     },
 }
 
 local function command_install(collection)
-  local common_opts = { force = true }
-  for _, cmd in pairs(collection) do
-    local opts = vim.tbl_deep_extend("force", common_opts, cmd.opts or {})
-    vim.api.nvim_create_user_command(cmd.name, cmd.fn, opts)
-  end
+    local common_opts = { force = true }
+    for _, cmd in pairs(collection) do
+        local opts = vim.tbl_deep_extend('force', common_opts, cmd.opts or {})
+        vim.api.nvim_create_user_command(cmd.name, cmd.fn, opts)
+    end
 end
 
 -- Install commands
@@ -61,16 +59,16 @@ map('n', '<leader>fb', ':Telescope buffers<cr>', {})
 map('n', '<leader>a', ':BufferLinePick<cr>', {})
 map('n', '<leader>t', ':BufferLineCycleNext<cr>', {})
 map('n', '<leader>r', ':BufferLineCyclePrev<cr>', {})
-map('',  '<C-q>', ':call QuickFixToggle()<cr>', {})
+map('', '<C-q>', ':call QuickFixToggle()<cr>', {})
 map('', '<f12>', ':set list!<cr>', {})
 map('', '<leader>w', ':set wrap!<cr>', {})
-map('n', '[[', '?{<CR>w99[{', {})
-map('n', '][', '/}<CR>b99]}', {})
-map('n', ']]', 'j0[[%/{<CR>', {})
-map('n', '[]', 'k$][%?}<CR>', {})
-map('n', '<C-h>', "<C-w>h", {})
-map('n', '<C-j>', "<C-w>j", {})
-map('n', '<C-k>', "<C-w>k", {})
-map('n', '<C-l>', "<C-w>l", {})
-
+-- map('n', '[[', '?{<CR>w99[{', {})
+-- map('n', '][', '/}<CR>b99]}', {})
+-- map('n', ']]', 'j0[[%/{<CR>', {})
+-- map('n', '[]', 'k$][%?}<CR>', {})
+map('n', '<C-h>', '<C-w>h', {})
+map('n', '<C-j>', '<C-w>j', {})
+map('n', '<C-k>', '<C-w>k', {})
+map('n', '<C-l>', '<C-w>l', {})
+map('n', '<leader>w', ':lua require("nvim-window").pick()<cr>', {})
 -- vim.keymap.set('n', '<c-\\>', '<Cmd>execute v:count . "ToggleTerm"<CR>', {})
