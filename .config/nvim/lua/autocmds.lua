@@ -30,15 +30,15 @@ api.nvim_create_autocmd(
     { pattern = { "help", "startuptime", "qf", "lspinfo" }, command = [[nnoremap <buffer><silent> q :close<CR>]] }
 )
 
-api.nvim_create_autocmd(
-    "FileType",
-    {
-        pattern = { "help", "NvimTree", "startuptime", "qf", "lspinfo" },
-        callback = function()
-            vim.opt_local.buflisted = false
-        end
-    }
-)
+--api.nvim_create_autocmd(
+--    "FileType",
+--    {
+--        pattern = { "help", "NvimTree", "startuptime", "qf", "lspinfo" },
+--        callback = function()
+--            vim.opt_local.buflisted = false
+--        end
+--    }
+--)
 
 api.nvim_create_autocmd("FileType", { pattern = "man", command = [[nnoremap <buffer><silent> q :quit<CR>]] })
 

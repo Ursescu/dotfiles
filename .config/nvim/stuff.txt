@@ -1,0 +1,4 @@
+highlight words under cursor
+always open buffer on the far right (check if possible)
+
+

@@ -10,7 +10,6 @@ function M.setup()
             enable = true,
             threshold = 0, -- the amount in ms that a plugins load time must be over for it to be included in the profile
         },
-
         display = {
             open_fn = function()
                 return require('packer.util').float { border = 'rounded' }
@@ -48,16 +47,22 @@ function M.setup()
     local function plugins(use)
         -- Packer itself
         use 'wbthomason/packer.nvim'
-
+        use { "kkharji/sqlite.lua" }
         use 'tpope/vim-surround'
+        use 'nvim-telescope/telescope-file-browser.nvim'
+        use 'nvim-telescope/telescope-smart-history.nvim'
+        use 'nvim-telescope/telescope-live-grep-args.nvim'
+        use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
         use {
             'nvim-telescope/telescope.nvim',
             requires = {
                 { 'nvim-lua/plenary.nvim' }
-            }
+            },
+            config = function()
+                require('config.telescope').setup()
+            end
         }
-        use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
-
+        -- NOT USED
         -- use { 'junegunn/fzf', run = function()
         --     vim.fn['fzf#install']()
         -- end
@@ -78,22 +83,31 @@ function M.setup()
         }
         use { 'ojroques/vim-oscyank', branch = 'main' }
 
-        use 'nvim-telescope/telescope-file-browser.nvim'
-        use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-        use { 'p00f/nvim-ts-rainbow' }
+        use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
+            config = function()
+                require('config.nvim-treesitter').setup()
+            end
+
+        }
+        -- NOT UPDATING AS TYPE
+        -- use { 'p00f/nvim-ts-rainbow' }
         use {
             'nvim-tree/nvim-tree.lua',
             requires = {
                 'nvim-tree/nvim-web-devicons', -- optional, for file icons
             },
-            tag = 'nightly' -- optional, updated every week. (see issue #1193)
+            tag = 'nightly', -- optional, updated every week. (see issue #1193)
+            config = function()
+                require('config.nvim-tree').setup()
+            end
         }
-
+        -- CAUSES SOME WEIRD ARTIFACTS
         -- use {
         --     'sitiom/nvim-numbertoggle',
         -- }
 
-        -- use 'simeji/winresizer'
+        use 'simeji/winresizer'
+        -- NOT USED
         -- use {
         --     'jedrzejboczar/possession.nvim',
         --     requires = { 'nvim-lua/plenary.nvim' },
@@ -101,8 +115,8 @@ function M.setup()
         --         require('config.possession').setup()
         --     end
         -- }
-        --
-        -- NVIM LSP CONFIGS
+
+        --NVIM LSP CONFIGS
         use 'neovim/nvim-lspconfig'
         use 'williamboman/mason.nvim'
         use 'williamboman/mason-lspconfig.nvim'
@@ -145,7 +159,7 @@ function M.setup()
 
         use {
             'akinsho/bufferline.nvim',
-            tag = 'dev',
+            tag = 'main',
             requires = { 'nvim-tree/nvim-web-devicons' },
             config = function()
                 require('config.bufferline').setup()
@@ -173,6 +187,54 @@ function M.setup()
             end
         }
 
+        use {
+            "rcarriga/nvim-dap-ui",
+            requires = { "mfussenegger/nvim-dap" },
+            config = function()
+                require('config.nvim-dap').setup()
+                require('config.nvim-dap-ui').setup()
+            end
+        }
+        use {
+            'rmagatti/auto-session',
+            config = function()
+                require('config.auto-session').setup()
+            end
+        }
+        use {
+            'simrat39/symbols-outline.nvim',
+            config = function()
+                require('config.symbols-outline').setup()
+            end
+        }
+
+        use {
+            'folke/neodev.nvim'
+        }
+
+        -- Zoom window in tab
+        use {
+            'troydm/zoomwintab.vim'
+        }
+
+        use {
+            "SmiteshP/nvim-navic",
+            requires = "neovim/nvim-lspconfig"
+        }
+
+        use {
+            'Ursescu/feline.nvim',
+            config = function()
+                require('config.feline').setup()
+            end
+        }
+        use {
+            'phaazon/hop.nvim',
+            branch = 'v2',
+            config = function()
+                require('config.hop').setup()
+            end
+        }
         -- Bootstrap Neovim
         if packer_bootstrap then
             print 'Neovim restart is required after installation!'
