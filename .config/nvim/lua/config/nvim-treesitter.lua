@@ -3,7 +3,7 @@ local M = {}
 function M.setup()
     -- Nvim Tree sitter config
     require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'c', 'lua', 'cpp', 'python', 'rust' },
+        ensure_installed = { 'vimdoc', 'c', 'lua', 'cpp', 'python', 'rust' },
         sync_install = false,
 
         auto_install = true,

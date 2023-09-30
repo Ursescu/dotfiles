@@ -82,12 +82,11 @@ function M.setup()
             end
         }
         use { 'ojroques/vim-oscyank', branch = 'main' }
-
+        --
         use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate',
             config = function()
                 require('config.nvim-treesitter').setup()
             end
-
         }
         -- NOT UPDATING AS TYPE
         -- use { 'p00f/nvim-ts-rainbow' }
@@ -96,7 +95,7 @@ function M.setup()
             requires = {
                 'nvim-tree/nvim-web-devicons', -- optional, for file icons
             },
-            tag = 'nightly', -- optional, updated every week. (see issue #1193)
+            tag = 'nightly',                   -- optional, updated every week. (see issue #1193)
             config = function()
                 require('config.nvim-tree').setup()
             end
@@ -126,6 +125,7 @@ function M.setup()
         use 'hrsh7th/cmp-path'
         use 'hrsh7th/cmp-cmdline'
         use 'hrsh7th/nvim-cmp'
+        use 'hrsh7th/cmp-nvim-lsp-signature-help'
 
         use 'L3MON4D3/LuaSnip'
         use 'saadparwaiz1/cmp_luasnip'
@@ -135,7 +135,7 @@ function M.setup()
 
         use 'yssl/QFEnter'
         use {
-            'numToStr/Comment.nvim',
+           'numToStr/Comment.nvim',
             config = function()
                 require('Comment').setup()
             end
@@ -158,16 +158,21 @@ function M.setup()
         }
 
         use {
-            'akinsho/bufferline.nvim',
-            tag = 'main',
-            requires = { 'nvim-tree/nvim-web-devicons' },
-            config = function()
-                require('config.bufferline').setup()
-            end
+            "ray-x/lsp_signature.nvim",
         }
+        -- TEMP: Don't use buffer line
+        -- use {
+        --     'akinsho/bufferline.nvim',
+        --     tag = 'main',
+        --     requires = { 'nvim-tree/nvim-web-devicons' },
+        --     config = function()
+        --         require('config.bufferline').setup()
+        --     end
+        -- }
 
         use {
             'lukas-reineke/indent-blankline.nvim',
+            -- branch = 'v3', -- not yet, need to change config
             config = function()
                 require('config.indent').setup()
             end
@@ -235,6 +240,15 @@ function M.setup()
                 require('config.hop').setup()
             end
         }
+
+        -- DON'T USE
+        -- use {
+        --     'ggandor/leap.nvim',
+        --     config = function()
+        --         require('leap').add_default_mappings(true)
+        --         require('leap').highlight_unlabeled_phase_one_targets = true
+        --     end
+        -- }
         -- Bootstrap Neovim
         if packer_bootstrap then
             print 'Neovim restart is required after installation!'

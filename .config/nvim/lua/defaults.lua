@@ -5,6 +5,7 @@ local wo = vim.wo
 
 vim.g.zoomwintab_hidetabbar = 0
 
+vim.o.shell = '/usr/bin/zsh'
 vim.bo.expandtab = true
 opt.expandtab = true
 opt.ts = 4
@@ -36,5 +37,9 @@ opt.completeopt = { 'menu', 'menuone', 'noselect' }
 
 -- Auto-session
 opt.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions'
+
+-- Set nvim
+vim.g.python3_host_prog = os.getenv('HOME') .. '/.pyenv/versions/py3nvim/bin/python'
+vim.g.loaded_perl_provider = 0
 
 cmd('colorscheme tokyonight-night')

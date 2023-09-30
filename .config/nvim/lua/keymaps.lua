@@ -25,6 +25,16 @@ vim.cmd [[
 
 local commands = {
     {
+        name = 'KillFloating',
+        fn = function()
+            for _, win in pairs(vim.api.nvim_list_wins()) do
+                if vim.api.nvim_win_get_config(win).relative == 'win' then
+                    vim.api.nvim_win_close(win, false)
+                end
+            end
+        end
+    },
+    {
         name = 'BufferKill',
         fn = function()
             require('utils').buf_kill('bd')
@@ -119,8 +129,9 @@ map('n', '<C-h>', '<C-w>h', {})
 map('n', '<C-j>', '<C-w>j', {})
 map('n', '<C-k>', '<C-w>k', {})
 map('n', '<C-l>', '<C-w>l', {})
-map('n', '<leader>z', ':HopWord<cr>', {})
-map('n', '<leader>w', ':lua require("nvim-window").pick()<cr>', {})
+map('n', 'ss', ':HopWord<cr>', {})
+-- map('n', '<leader>z', ':HopWord<cr>', {})
+map('n', 'sw', ':lua require("nvim-window").pick()<cr>', {})
 
 -- Delete to void register
 map('n', '<leader>d', [["_d]])
@@ -131,5 +142,29 @@ map('n', 'N', 'Nzzzv')
 -- vim.keymap.set("n", "<leader>bo", "<cmd>%bd|e#<cr>", {desc="Close all buffers but the current one"})
 vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
 vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+
+function _G.set_terminal_keymaps()
+    local opts = { buffer = 0 }
+    vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+    vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+    vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+    vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+    vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+    vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+end
+
+-- if you only want these mappings for toggle term use term://*toggleterm#* instead
+vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
+
+-- Diagnostic key maps
+local opts = { noremap = true, silent = true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setqflist, opts)
+
+vim.keymap.set({ 'n' }, '<C-k>', function()
+    require('lsp_signature').toggle_float_win()
+end, { silent = true, noremap = true, desc = 'toggle signature' })
 
 -- vim.keymap.set('n', '<c-\\>', '<Cmd>execute v:count . "ToggleTerm"<CR>', {})

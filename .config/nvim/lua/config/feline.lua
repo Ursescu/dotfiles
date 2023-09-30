@@ -2,101 +2,53 @@ local M = {}
 local navic = require("nvim-navic")
 local vi_mode_utils = require('feline.providers.vi_mode')
 
-local components = {
+local winbar_components = {
     active = {},
     inactive = {}
 }
 
-table.insert(components.active, {})
-table.insert(components.inactive, {})
-
-local inactive = {
-    filetypes = {
-        '^NvimTree$',
-        '^packer$',
-        '^startify$',
-        '^fugitive$',
-        '^fugitiveblame$',
-        '^qf$',
-        '^help$'
-    },
-    buftypes = {
-        '^terminal$'
-    },
-    bufnames = {}
-}
-
--- Return true if any pattern in tbl matches provided value
-local function find_pattern_match(tbl, val)
-    return tbl
-        and next(vim.tbl_filter(function(pattern)
-            return val:match(pattern)
-        end, tbl))
-end
-
-table.insert(components.active[1], {
-    provider = function(component)
-        local filetype = vim.bo.filetype
-
-        if find_pattern_match(inactive.filetypes, filetype) then
-            return '', nil
-        else
+winbar_components.active[1] = {
+    {
+        provider = function(component)
             return require('feline.providers.file').file_info(component, {})
-        end
-    end,
-    hl = function()
-        local filetype = vim.bo.filetype
-
-        if find_pattern_match(inactive.filetypes, filetype) then
-            return 'Normal'
-        else
+        end,
+        hl = function()
             return {
                 fg = 'skyblue',
                 bg = 'NONE',
                 style = 'bold',
             }
-        end
-    end,
-    right_sep = {
-        str = ' ',
-        hl = 'Normal'
+        end,
+        right_sep = {
+            str = ' ',
+            hl = 'Normal'
+        }
+    },
+    {
+        provider = function()
+            return navic.get_location()
+        end,
+        enabled = function()
+            return navic.is_available()
+        end,
+        hl = 'Normal',
     }
-})
+}
 
-table.insert(components.active[1], {
-    provider = function()
-        return navic.get_location()
-    end,
-    enabled = function()
-        return navic.is_available()
-    end,
-    hl = 'Normal',
-})
-
-table.insert(components.inactive[1], {
-    provider = function(component)
-        local filetype = vim.bo.filetype
-
-        if find_pattern_match(inactive.filetypes, filetype) then
-            return '', nil
-        else
+winbar_components.inactive[1] = {
+    {
+        provider = function(component)
             return require('feline.providers.file').file_info(component, {})
-        end
-    end,
-    hl = function()
-        local filetype = vim.bo.filetype
-        -- vim.pretty_print(filetype)
-        if find_pattern_match(inactive.filetypes, filetype) then
-            return 'Normal'
-        else
+        end,
+        hl = function()
             return {
                 fg = 'white',
                 bg = 'NONE',
                 style = 'bold',
             }
-        end
-    end,
-})
+        end,
+    }
+}
 
 local status_line_components = {
     active = {},
@@ -282,12 +234,30 @@ function M.setup()
         components = status_line_components
     })
 
+    -- Disable WINBAR for these filetypes/buftypes/bufnames
+    local winbar_disable = {
+        filetypes = {
+            '^NvimTree$',
+            '^packer$',
+            '^startify$',
+            '^fugitive$',
+            '^fugitiveblame$',
+            '^qf$',
+            '^help$',
+            'toggleterm'
+        },
+        buftypes = {
+            '^terminal$',
+            '^nofile$'
+        },
+        bufnames = {}
+    }
+
     require('feline').winbar.setup({
-        components = components,
+        components = winbar_components,
         use_autocmd = true,
-        disable = inactive,
+        disable = winbar_disable,
     })
 end
 
--- M.setup()
 return M
