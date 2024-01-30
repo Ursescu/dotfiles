@@ -14,7 +14,7 @@ function M.setup()
     -- })
 
     require('ibl').setup({
-        debounce = 100,
+        debounce = 10,
         scope = {
             enabled = false
         },

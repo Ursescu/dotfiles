@@ -1,5 +1,5 @@
-require('defaults')
 require('plugins').setup()
+require('defaults')
 
 require('luasnip.loaders.from_vscode').lazy_load()
 

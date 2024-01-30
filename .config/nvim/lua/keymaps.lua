@@ -163,7 +163,7 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setqflist, opts)
 
-vim.keymap.set({ 'n' }, '<C-k>', function()
+vim.keymap.set({ 'n' }, '<C-p>', function()
     require('lsp_signature').toggle_float_win()
 end, { silent = true, noremap = true, desc = 'toggle signature' })
 
