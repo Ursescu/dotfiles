@@ -95,7 +95,6 @@ function M.setup()
             requires = {
                 'nvim-tree/nvim-web-devicons', -- optional, for file icons
             },
-            tag = 'nightly',                   -- optional, updated every week. (see issue #1193)
             config = function()
                 require('config.nvim-tree').setup()
             end
