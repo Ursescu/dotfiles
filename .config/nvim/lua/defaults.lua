@@ -5,7 +5,7 @@ local wo = vim.wo
 
 vim.g.zoomwintab_hidetabbar = 0
 
-vim.o.shell = '/usr/bin/zsh'
+vim.o.shell = '/usr/bin/bash'
 vim.bo.expandtab = true
 opt.expandtab = true
 opt.ts = 4
