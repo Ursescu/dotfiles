@@ -103,6 +103,17 @@ function M.setup()
         -- use {
         --     'sitiom/nvim-numbertoggle',
         -- }
+        use {
+            "cbochs/portal.nvim",
+            -- Optional dependencies
+            requires = {
+                "cbochs/grapple.nvim",
+                "ThePrimeagen/harpoon"
+            },
+            config = function()
+                require('config.portal').setup()
+            end
+        }
 
         use 'simeji/winresizer'
         -- NOT USED
@@ -134,7 +145,7 @@ function M.setup()
 
         use 'yssl/QFEnter'
         use {
-           'numToStr/Comment.nvim',
+            'numToStr/Comment.nvim',
             config = function()
                 require('Comment').setup()
             end
@@ -191,14 +202,14 @@ function M.setup()
             end
         }
 
-        use {
-            "rcarriga/nvim-dap-ui",
-            requires = { "mfussenegger/nvim-dap" },
-            config = function()
-                require('config.nvim-dap').setup()
-                require('config.nvim-dap-ui').setup()
-            end
-        }
+        -- use {
+        --     "rcarriga/nvim-dap-ui",
+        --     requires = { "mfussenegger/nvim-dap" },
+        --     config = function()
+        --         require('config.nvim-dap').setup()
+        --         require('config.nvim-dap-ui').setup()
+        --     end
+        -- }
         use {
             'rmagatti/auto-session',
             config = function()

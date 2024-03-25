@@ -14,6 +14,34 @@ function M.setup()
         end)
     end
 
+    local ts_select_dir_for_grep = function(prompt_bufnr)
+        local action_state = require("telescope.actions.state")
+        local fb = require("telescope").extensions.file_browser
+        local live_grep = require("telescope.builtin").live_grep
+        local current_line = action_state.get_current_line()
+
+        fb.file_browser({
+            files = false,
+            depth = false,
+            attach_mappings = function(prompt_bufnr)
+                require("telescope.actions").select_default:replace(function()
+                    local entry_path = action_state.get_selected_entry().Path
+                    local dir = entry_path:is_dir() and entry_path or entry_path:parent()
+                    local relative = dir:make_relative(vim.fn.getcwd())
+                    local absolute = dir:absolute()
+
+                    live_grep({
+                        results_title = relative .. "/",
+                        cwd = absolute,
+                        default_text = current_line,
+                    })
+                end)
+
+                return true
+            end,
+        })
+    end
+
     local bookmark_actions = require('telescope').extensions.vim_bookmarks.actions
     local action_layout = require('telescope.actions.layout')
     require('telescope').setup {
@@ -35,9 +63,8 @@ function M.setup()
             },
             mappings = {
                 i = {
-                    ["<C-h>"] = require('telescope.actions.history').get_simple_history,
-                    ["<C-Down>"] = require('telescope.actions').cycle_history_next,
-                    ["<C-Up>"] = require('telescope.actions').cycle_history_prev,
+                    ["<C-l>"] = require('telescope.actions').cycle_history_next,
+                    ["<C-h>"] = require('telescope.actions').cycle_history_prev,
 
                     -- ['<esc>'] = actions.close,
                     ['<M-p>'] = action_layout.toggle_preview
@@ -54,6 +81,16 @@ function M.setup()
             find_files = {
                 path_display = {
                     'absolute',
+                }
+            },
+            live_grep = {
+                mappings = {
+                    i = {
+                        ["<C-f>"] = ts_select_dir_for_grep,
+                    },
+                    n = {
+                        ["<C-f>"] = ts_select_dir_for_grep,
+                    },
                 }
             },
             buffers = {
@@ -82,6 +119,14 @@ function M.setup()
                         width = 0.4
                     }
                 }
+            },
+            live_grep_args = {
+                auto_quoting = true,
+                mappings = {
+                    i = {
+                        ['<C-space>'] = require('telescope.actions').to_fuzzy_refine,
+                    }
+                },
             },
             vim_bookmarks = {
                 all = {

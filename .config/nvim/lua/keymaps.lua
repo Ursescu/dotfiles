@@ -101,6 +101,8 @@ end
 
 -- Install commands
 command_install(commands)
+local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
+vim.keymap.set("n", "<leader>gc", live_grep_args_shortcuts.grep_word_under_cursor)
 
 -- Winresizer
 vim.g.winresizer_start_key = '<leader>i'
@@ -108,6 +110,7 @@ vim.g.winresizer_start_key = '<leader>i'
 map('n', '<leader>ff', ':Telescope find_files<cr>', {})
 map('n', '<leader>fg', ':Telescope live_grep<cr>', {})
 map('n', '<leader>fe', ':Telescope file_browser<cr>', {})
+-- map('n', '<leader>gc', ':lua ', {})
 map('n', '<leader>fa', ':lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>', {})
 map('v', '<leader>c', ':OSCYank<cr>', {})
 map('n', '<leader>*', ':Grepper -noprompt -buffer -cword<cr>', {})
@@ -132,6 +135,9 @@ map('n', '<C-l>', '<C-w>l', {})
 map('n', 'ss', ':HopWord<cr>', {})
 -- map('n', '<leader>z', ':HopWord<cr>', {})
 map('n', 'sw', ':lua require("nvim-window").pick()<cr>', {})
+
+vim.keymap.set("n", "<C-o>", "<cmd>Portal jumplist backward<cr>")
+vim.keymap.set("n", "<C-i>", "<cmd>Portal jumplist forward<cr>")
 
 -- Delete to void register
 map('n', '<leader>d', [["_d]])

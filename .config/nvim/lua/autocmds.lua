@@ -55,6 +55,12 @@ api.nvim_create_autocmd("BufEnter", { command = [[set formatoptions-=cro]] })
 -- augroup END
 -- ]])
 
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		vim.cmd("clearjumps")
+	end,
+})
+
 local luasnip_fix_augroup = vim.api.nvim_create_augroup("MyLuaSnipHistory", { clear = true })
 vim.api.nvim_create_autocmd("ModeChanged", {
     pattern = '*',
